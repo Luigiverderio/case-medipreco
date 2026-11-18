@@ -1,0 +1,15 @@
+{
+  "cliente": "Bravo Tecnologia",
+  "modelo": "M2",
+  "status": "rascunho",
+  "origem": "transcrita manualmente do contrato MP-2024-041",
+  "cnpjs": ["52.907.316/0001-75"],
+  "base":      { "tipo": "titular", "clausula": "4.1, 4.2" },
+  "preco":     { "tipo": "valor_unico", "valor": 15.00, "clausula": "4.1" },
+  "contagem":  { "metodo": "foto_dia", "dia": 26, "mes": "anterior", "clausula": "4.3" },
+  "minimo":    null,
+  "nota":      { "tipo": "unica", "clausula": "4.3" },
+  "pagamento": { "tipo": "pre", "clausula": "4.3, 4.4" },
+  "premissas": ["a competencia e cobrada antecipadamente, com foto no dia 26 do mes anterior"],
+  "pendencias": ["acerto da diferenca na nota seguinte (4.4) ainda nao e calculado pelo motor"]
+}

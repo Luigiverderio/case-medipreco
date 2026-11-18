@@ -1,0 +1,15 @@
+{
+  "cliente": "Estrela Indústria",
+  "modelo": "M3",
+  "status": "rascunho",
+  "origem": "transcrita manualmente do contrato MP-2025-033",
+  "cnpjs": ["27.645.190/0001-60", "27.645.190/0002-41"],
+  "base":      { "tipo": "vida", "clausula": "5.1" },
+  "preco":     { "tipo": "valor_unico", "valor": 9.50, "clausula": "5.1" },
+  "contagem":  { "metodo": "foto_dia", "dia": 26, "mes": "referencia", "clausula": "5.1" },
+  "minimo":    { "vidas": 500, "clausula": "5.2" },
+  "nota":      { "tipo": "unica", "clausula": "5.4" },
+  "pagamento": { "tipo": "pos", "clausula": "5.4" },
+  "premissas": ["minimo cobrado como 500 vidas x valor unitario, somando matriz e filial"],
+  "pendencias": []
+}

@@ -1,0 +1,15 @@
+{
+  "cliente": "Aurora Logística",
+  "modelo": "M1",
+  "status": "rascunho",
+  "origem": "transcrita manualmente do contrato MP-2024-018",
+  "cnpjs": ["41.220.871/0001-16"],
+  "base":      { "tipo": "vida", "clausula": "5.1, 5.2" },
+  "preco":     { "tipo": "por_plano", "planos": { "Base": 7.50, "Plus": 12.00 }, "clausula": "5.1" },
+  "contagem":  { "metodo": "foto_dia", "dia": 26, "mes": "referencia", "clausula": "5.3" },
+  "minimo":    null,
+  "nota":      { "tipo": "unica", "clausula": "5.4" },
+  "pagamento": { "tipo": "pos", "clausula": "5.4" },
+  "premissas": ["dependentes seguem o plano do titular (5.2); na base cada pessoa ja traz o plano"],
+  "pendencias": []
+}

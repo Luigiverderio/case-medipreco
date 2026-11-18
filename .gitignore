@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+*.env
+dados/uploads/
+saida/analises/
+saida/review/

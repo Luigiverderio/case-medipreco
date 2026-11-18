@@ -1,0 +1,18 @@
+{
+  "cliente": "Grupo Cedro",
+  "modelo": null,
+  "status": "rascunho",
+  "origem": "transcrita manualmente do contrato MP-2024-057 (sem modelo no catalogo)",
+  "cnpjs": ["33.718.402/0001-95", "33.722.817/0001-32", "33.727.529/0001-70"],
+  "base":      { "tipo": "vida", "clausula": "6.1" },
+  "preco":     { "tipo": "valor_unico", "valor": 8.00, "clausula": "6.1" },
+  "contagem":  { "metodo": "pico_mes", "clausula": "6.2" },
+  "minimo":    null,
+  "nota":      { "tipo": "por_cnpj_rateada", "clausula": "6.3" },
+  "pagamento": { "tipo": "pos", "clausula": "6.3" },
+  "premissas": [
+    "pico medido por dia, somando as tres empresas",
+    "rateio proporcional as vidas de cada empresa no dia do pico"
+  ],
+  "pendencias": ["6.2 nao define como apurar o maximo de vidas (pico diario, entradas e saidas no mes)"]
+}

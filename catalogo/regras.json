@@ -1,0 +1,45 @@
+{
+  "observacao": "Catalogo semente. Um modelo descreve a ESTRUTURA da cobranca; precos, dia da foto e faixas sao parametros de cada contrato, nao entram na comparacao.",
+  "modelos": [
+    {
+      "id": "M1",
+      "nome": "Por vida, valor por plano, foto em dia fixo do mes de referencia, pos-pago",
+      "base": "vida",
+      "preco": "valor por plano (dependente segue o plano do titular)",
+      "metodo_contagem": "foto da base em um dia fixo do mes de referencia",
+      "pagamento": "pos-pago",
+      "minimo": "nao ha",
+      "nota": "uma nota para a contratante"
+    },
+    {
+      "id": "M2",
+      "nome": "Por titular, valor unico, pre-pago com acerto",
+      "base": "titular (dependentes sem custo)",
+      "preco": "valor unico por titular",
+      "metodo_contagem": "foto da base em um dia fixo do mes anterior ao de referencia",
+      "pagamento": "pre-pago, diferenca compensada na nota seguinte",
+      "minimo": "nao ha",
+      "nota": "uma nota para a contratante"
+    },
+    {
+      "id": "M3",
+      "nome": "Por vida, valor unico, foto em dia fixo, minimo garantido, nota unica na matriz",
+      "base": "vida",
+      "preco": "valor unico por vida",
+      "metodo_contagem": "foto da base em um dia fixo do mes de referencia",
+      "pagamento": "pos-pago",
+      "minimo": "faturamento minimo em numero de vidas",
+      "nota": "uma unica nota contra a matriz, cobrindo matriz e filiais"
+    },
+    {
+      "id": "M4",
+      "nome": "Parceira revendedora: tabela escalonada por quantidade de vidas, vida ativa ao menos 1 dia no mes",
+      "base": "vida",
+      "preco": "tabela escalonada pela quantidade de vidas",
+      "metodo_contagem": "vida que ficou ativa ao menos 1 dia no mes de referencia conta como mensalidade integral",
+      "pagamento": "pos-pago",
+      "minimo": "nao ha",
+      "nota": "uma nota para a parceira"
+    }
+  ]
+}

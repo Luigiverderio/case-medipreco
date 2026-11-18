@@ -1,0 +1,15 @@
+{
+  "cliente": "Faro Serviços",
+  "modelo": null,
+  "status": "rascunho",
+  "origem": "transcrita manualmente do contrato MP-2026-002 (sem modelo no catalogo)",
+  "cnpjs": ["71.403.268/0001-22"],
+  "base":      { "tipo": "vida", "clausula": "4.1" },
+  "preco":     { "tipo": "valor_unico", "valor": 11.00, "clausula": "4.1" },
+  "contagem":  { "metodo": "pro_rata_dia", "clausula": "4.2" },
+  "minimo":    null,
+  "nota":      { "tipo": "unica", "clausula": "4.3" },
+  "pagamento": { "tipo": "pos", "clausula": "4.3" },
+  "premissas": ["vida que sai numa data nao conta como ativa naquele dia"],
+  "pendencias": []
+}

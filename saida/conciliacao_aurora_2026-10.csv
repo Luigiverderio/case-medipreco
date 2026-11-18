@@ -1,0 +1,20 @@
+grupo,pessoa_id,cnpj,plano_antes,plano_depois,evento,data_informada,data_processamento,origem
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P636041,41.220.871/0001-16,Plus,,saida,2026-10-21,2026-10-27 11:57:01,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P430765,41.220.871/0001-16,Plus,,saida,2026-10-21,2026-10-27 11:57:00,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P895298,41.220.871/0001-16,Plus,,saida,2026-10-21,2026-10-27 11:57:00,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P993220,41.220.871/0001-16,Base,,saida,2026-10-21,2026-10-27 11:57:00,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P235985,41.220.871/0001-16,Plus,,saida,2026-10-22,2026-10-27 11:57:02,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P235668,41.220.871/0001-16,Plus,,saida,2026-10-22,2026-10-27 11:57:01,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P592239,41.220.871/0001-16,Plus,,saida,2026-10-22,2026-10-27 11:57:01,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P264468,41.220.871/0001-16,Plus,,saida,2026-10-22,2026-10-27 11:57:02,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P459685,41.220.871/0001-16,Base,,saida,2026-10-23,2026-10-27 11:57:03,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P401967,41.220.871/0001-16,Base,,saida,2026-10-23,2026-10-27 11:57:04,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P214492,41.220.871/0001-16,Base,,saida,2026-10-23,2026-10-27 11:57:03,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P680993,41.220.871/0001-16,Plus,,saida,2026-10-23,2026-10-27 11:57:04,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P259695,41.220.871/0001-16,Plus,,saida,2026-10-23,2026-10-27 11:57:02,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P585895,41.220.871/0001-16,Base,,saida,2026-10-23,2026-10-27 11:57:03,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P752026,41.220.871/0001-16,Base,,saida,2026-10-26,2026-10-27 11:57:05,carga_rh
+"saiu ate a foto, informada depois (VERIFICAR CREDITO)",P732694,41.220.871/0001-16,Base,,saida,2026-10-26,2026-10-27 11:57:04,carga_rh
+saiu depois da foto (cobranca correta),P405692,41.220.871/0001-16,Base,,saida,2026-10-27,2026-10-27 11:57:05,carga_rh
+saiu depois da foto (cobranca correta),P118539,41.220.871/0001-16,Base,,saida,2026-10-27,2026-10-27 11:57:05,carga_rh
+saiu depois da foto (cobranca correta),P576444,41.220.871/0001-16,Base,,saida,2026-10-27,2026-10-27 11:57:06,carga_rh

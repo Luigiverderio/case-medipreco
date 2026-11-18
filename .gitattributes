@@ -1,0 +1,4 @@
+*.pdf binary
+*.png binary
+*.sqlite binary
+*.jsonl text eol=lf

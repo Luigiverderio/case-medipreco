@@ -1,0 +1,30 @@
+{
+  "cliente": "Delta Benefícios",
+  "modelo": "M4",
+  "status": "rascunho",
+  "origem": "transcrita manualmente do contrato MP-2025-006 (parceira revendedora)",
+  "cnpjs": ["60.184.533/0001-10"],
+  "base":      { "tipo": "vida", "clausula": "7.1" },
+  "preco": {
+    "tipo": "faixa",
+    "faixas": [
+      { "ate": 5000,  "valor": 10.00 },
+      { "ate": 10000, "valor": 9.00 },
+      { "ate": null,  "valor": 8.00 }
+    ],
+    "modo": "cheia",
+    "clausula": "7.1"
+  },
+  "contagem":  { "metodo": "ativo_1_dia", "clausula": "7.2" },
+  "minimo":    null,
+  "nota":      { "tipo": "unica", "clausula": "7.4" },
+  "pagamento": { "tipo": "pos", "clausula": "7.4" },
+  "premissas": [
+    "faixa tratada como cheia, que e como as notas foram emitidas",
+    "vida que sai numa data nao conta como ativa naquele dia"
+  ],
+  "pendencias": [
+    "faixa: o contrato nao diz se e cheia ou progressiva; confirmar com o cliente",
+    "7.1 nao diz qual criterio de contagem define a faixa"
+  ]
+}
