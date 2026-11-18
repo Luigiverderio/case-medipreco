@@ -6,7 +6,7 @@ contra a base e monta a regra e o codigo. Nada vale sem aprovacao humana (ver ap
 import json
 import re
 
-from vincular import MODELO
+from vincular import MODELO, como_lista
 
 BASES = ("vida", "titular")
 PRECOS = ("valor_unico", "por_plano", "faixa")
@@ -151,8 +151,8 @@ def montar(bruto, base_empresas):
     if bruto.get("pagamento_tipo") not in PAGAMENTOS:
         erros.append("tipo de pagamento inválido")
     regra["pagamento"] = {"tipo": bruto.get("pagamento_tipo"), "clausula": cl("pagamento_clausula")}
-    regra["premissas"] = list(bruto.get("premissas") or [])
-    regra["pendencias"] = list(bruto.get("pendencias") or [])
+    regra["premissas"] = como_lista(bruto.get("premissas"))
+    regra["pendencias"] = como_lista(bruto.get("pendencias"))
     return regra, erros
 
 

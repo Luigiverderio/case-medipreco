@@ -7,7 +7,7 @@ A proposta está em `saida/site/proposta.html` e o uso de IA em `USO_DE_IA.md`.
 
 ## Como ligar
 
-1. Copie `.env.example` para `.env` e cole a chave da IA no lugar de `cole-a-chave-aqui` (só a análise de contratos usa).
+1. Cole a chave da IA na aba **Sistema** (só a análise de contratos usa). Se preferir, copie `.env.example` para `.env` e preencha.
 2. Dê dois cliques em **`iniciar.bat`** (na primeira vez ele instala o que precisa).
 3. Abra **http://127.0.0.1:5000**. Não há login.
 

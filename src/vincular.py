@@ -86,6 +86,30 @@ def empresas():
     return dict(con.execute("select cnpj, cliente from empresas"))
 
 
+def como_lista(valor):
+    """O modelo as vezes devolve uma lista como texto ('["a"],["b"]'). Devolve sempre uma lista de strings."""
+    if valor is None:
+        return []
+    if isinstance(valor, str):
+        texto = valor.strip()
+        if not texto:
+            return []
+        for tentativa in (texto, "[" + texto + "]"):
+            try:
+                valor = json.loads(tentativa)
+                break
+            except ValueError:
+                continue
+        else:
+            return [texto]
+    if isinstance(valor, (list, tuple)):
+        itens = []
+        for item in valor:
+            itens.extend(como_lista(item) if isinstance(item, (list, tuple, str)) else [str(item)])
+        return [i for i in itens if i.strip()]
+    return [str(valor)]
+
+
 def analisar(cliente_api, catalogo, contrato):
     ferramenta = {"type": "function", "function": {
         "name": FERRAMENTA["name"], "description": FERRAMENTA["description"],
@@ -109,6 +133,8 @@ def analisar(cliente_api, catalogo, contrato):
         except ValueError:
             continue
         if all(k in analise for k in FERRAMENTA["input_schema"]["required"]):
+            for campo in ("divergencias", "pontos_de_atencao"):
+                analise[campo] = como_lista(analise[campo])
             return analise
     raise RuntimeError("o modelo nao devolveu a analise no formato esperado")
 

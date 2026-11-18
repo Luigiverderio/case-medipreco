@@ -29,7 +29,7 @@ from werkzeug.utils import secure_filename
 
 import regra_contrato as rc
 from gerar_paginas import ESTILO, slug
-from vincular import (CNPJ_RE, MODELO, SISTEMA, URL_API, analisar, decidir, empresas,
+from vincular import (CNPJ_RE, como_lista, MODELO, SISTEMA, URL_API, analisar, decidir, empresas,
                       gravar_auditoria)
 
 
@@ -67,6 +67,8 @@ APP_STYLE = """
 .empty{padding:30px;border:1px dashed var(--borda);border-radius:12px;color:#627382;text-align:center}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.file-help{font-size:13px;color:#627382}
 .console{background:#0e2841;color:#dfeaf5;padding:16px 18px;border-radius:12px;overflow:auto;max-height:520px;font:13px/1.5 Consolas,monospace;white-space:pre-wrap;margin:10px 0}
+.pensando{display:flex;gap:12px;align-items:center;margin-top:16px;padding:12px 14px;border:1px solid var(--borda);border-radius:10px;background:var(--surface);color:var(--navy);font-weight:700;font-size:14px}
+.spin{width:18px;height:18px;flex:none;border:3px solid #d7e0ea;border-top-color:var(--cta);border-radius:50%;animation:giro .8s linear infinite}@keyframes giro{to{transform:rotate(360deg)}}
 .key-form{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.key-form input{flex:1;min-width:260px;padding:11px 12px;border:1px solid var(--borda);border-radius:8px;font:14px Manrope,sans-serif}
 """
 
@@ -82,7 +84,24 @@ BASE = """
 <a href="{{ url_for('pagina_site', arquivo='comercial.html') }}">Comercial</a><a class="{{ 'active' if active == 'contratos' else '' }}" href="{{ url_for('contratos') }}">Contratos</a>
 <a class="{{ 'active' if active == 'aprovacoes' else '' }}" href="{{ url_for('aprovacoes') }}">Aprovações</a>
 <a class="{{ 'active' if active == 'sistema' else '' }}" href="{{ url_for('sistema') }}">Sistema</a>
-</nav></div></header><main id="conteudo">{{ body }}</main></body></html>
+</nav></div></header><main id="conteudo">{{ body }}</main>
+<script>
+document.querySelectorAll('form[data-carregando]').forEach(function(f){
+  f.addEventListener('submit',function(){
+    var msgs=f.dataset.carregando.split('|'), b=f.querySelector('button[type=submit]');
+    if(b){setTimeout(function(){b.disabled=true;},0);}
+    var box=document.createElement('div'); box.className='pensando'; box.setAttribute('role','status');
+    box.innerHTML='<span class="spin"></span><span></span>'; f.appendChild(box);
+    var txt=box.lastChild, i=0, ini=Date.now();
+    function passo(){
+      var seg=Math.round((Date.now()-ini)/1000);
+      if(i<msgs.length-1 && Date.now()-ini>(i+1)*9000){i++;}
+      txt.textContent=msgs[i]+' ('+seg+'s)';
+    }
+    passo(); setInterval(passo,1000);
+  });
+});
+</script></body></html>
 """
 
 
@@ -135,7 +154,7 @@ def processar_pdf(nome_original, dados):
     analise = analisar(cliente_api, catalogo, texto)
     cnpjs = sorted(set(CNPJ_RE.findall(texto)))
     status, motivos, clientes = decidir(analise, cnpjs, empresas())
-    if analise.get("divergencias"):
+    if como_lista(analise.get("divergencias")):
         motivos.append("há divergências entre o contrato e os modelos do catálogo")
     status = "vinculado" if not motivos else "pendente_aprovacao"
 
@@ -178,10 +197,11 @@ def tabela_historico(registros):
     if not registros:
         return '<div class="empty">Nenhum contrato analisado.</div>'
     linhas = "".join(
-        f"<tr><td><a href='{url_for('analise_contrato', analise_id=r['id'])}'>{esc(r['arquivo'])}</a></td>"
+        f"<tr><td>{esc(r['arquivo'])}</td>"
         f"<td>{esc((r.get('clientes') or [r['analise'].get('cliente', 'Não identificado')])[0])}</td>"
         f"<td>{esc(r['analise'].get('regra_id', '—'))}</td><td>{'Vinculado' if r['status'] == 'vinculado' else 'Aprovação necessária'}</td>"
-        f"<td>{botao_excluir(r['id'], 'Excluir')}</td></tr>"
+        f"<td style='white-space:nowrap'><a class='button' href='{url_for('analise_contrato', analise_id=r['id'])}'>Ver análise</a> "
+        f"{botao_excluir(r['id'], 'Excluir')}</td></tr>"
         for r in registros
     )
     return f'<div class="table-wrap"><table><tr><th>Arquivo</th><th>Cliente</th><th>Regra</th><th>Status</th><th></th></tr>{linhas}</table></div>'
@@ -223,7 +243,7 @@ def contratos():
     historico = tabela_historico(carregar_analises())
     corpo = f"""
     <section class="page-intro"><h1>Contratos</h1><p class="sub">Envie um contrato para identificar o cliente e a regra de cobrança.</p></section>
-    {erro_html}<div class="form-box"><form method="post" enctype="multipart/form-data">
+    {erro_html}<div class="form-box"><form method="post" enctype="multipart/form-data" data-carregando="Lendo o PDF|O agente está identificando o cliente e o modelo de cobrança|Extraindo valores e cláusulas da regra|Conferindo CNPJs e montando a regra para você revisar">
     <label for="contrato">Contrato assinado</label><input id="contrato" name="contrato" type="file" accept="application/pdf,.pdf" required>
     <p class="file-help">PDF com até 10 MB.</p>
     <button class="button" type="submit">Analisar contrato</button></form></div>
@@ -242,7 +262,7 @@ def analise_contrato(analise_id):
     status = "Vinculado automaticamente" if registro["status"] == "vinculado" else "Aprovação necessária"
     tipo = "ok" if registro["status"] == "vinculado" else "aviso"
     motivos = "".join(f"<li>{esc(m)}</li>" for m in registro["motivos"])
-    alertas = "".join(f"<li>{esc(p)}</li>" for p in analise.get("pontos_de_atencao", []))
+    alertas = "".join(f"<li>{esc(p)}</li>" for p in como_lista(analise.get("pontos_de_atencao")))
     corpo = f"""
     <section class="page-intro"><h1>Análise do contrato</h1><p class="sub">{esc(registro['arquivo'])}</p></section>
     <div class="status-box"><div><h2>{status}</h2><p>{esc((registro.get('clientes') or [analise['cliente']])[0])}</p></div>
@@ -283,13 +303,13 @@ def secao_regra(registro):
     decisao = registro.get("decisao_regra")
     if decisao:
         aprovada = decisao["resultado"] == "aprovada"
-        return (f"<h2>Regra do contrato</h2><div class='status-box'><div><h2>{'Regra aprovada e em vigor' if aprovada else 'Regra rejeitada'}</h2>"
+        return (f"<h2 id='regra'>Regra do contrato</h2><div class='status-box'><div><h2>{'Regra aprovada e em vigor' if aprovada else 'Regra rejeitada'}</h2>"
                 f"<p>{quando_br(decisao['quando'])}</p></div><span class='badge {'ok' if aprovada else 'rev'}'>{esc(decisao['resultado'])}</span></div>")
     if "regra_proposta" not in registro:
-        return ("<h2>Regra do contrato</h2><div class='nota'>Esta análise foi feita antes da extração de regras. "
+        return ("<h2 id='regra'>Regra do contrato</h2><div class='nota'>Esta análise foi feita antes da extração de regras. "
                 "Exclua-a e envie o contrato de novo para receber a regra proposta.</div>")
     if not regra:
-        return ("<h2>Regra do contrato</h2><div class='error-box'>Não foi possível extrair uma regra deste contrato. "
+        return ("<h2 id='regra'>Regra do contrato</h2><div class='error-box'>Não foi possível extrair uma regra deste contrato. "
                 + esc("; ".join(erros)) + "</div>")
     linhas = "".join(f"<tr><td>{esc(a)}</td><td>{esc(b)}</td><td>{esc(c)}</td></tr>" for a, b, c in rc.linhas_resumo(regra))
     existente = (RAIZ / "regras" / f"{slug(regra['cliente'])}.json").exists() if regra["cliente"] else False
@@ -299,11 +319,11 @@ def secao_regra(registro):
     problemas = f"<div class='error-box'><b>Não é possível aprovar ainda:</b><ul>{itens_erro}</ul></div>" if erros else ""
     extras = "".join(f"<li>{esc(t)}</li>" for t in regra["premissas"] + regra["pendencias"])
     botoes = ("" if erros else
-              f"<form method='post' action='{url_for('decidir_regra', analise_id=registro['id'])}' class='actions'>"
+              f"<form method='post' action='{url_for('decidir_regra', analise_id=registro['id'])}' class='actions' data-carregando='Aplicando a decisão e recalculando as páginas'>"
               f"<button class='button' name='decisao' value='aprovar' type='submit'>Aprovar e ativar a regra</button>"
               f"<button class='button' name='decisao' value='rejeitar' type='submit' style='background:#627382'>Rejeitar</button></form>")
     lista_extras = f"<h3>Premissas e pontos em aberto</h3><ul>{extras}</ul>" if extras else ""
-    return (f"<h2>Regra proposta para {esc(regra['cliente'] or 'cliente não identificado')}</h2>"
+    return (f"<h2 id='regra'>Regra proposta para {esc(regra['cliente'] or 'cliente não identificado')}</h2>"
             f"<p class='peq'>Extraída pelo agente do texto do contrato. Confira com o PDF antes de aprovar: ao aprovar, ela passa a "
             f"valer nos cálculos e nas páginas.</p><div class='table-wrap'><table><tr><th>Item</th><th>Valor</th><th>Cláusula</th></tr>{linhas}</table></div>"
             f"{lista_extras}{aviso}{problemas}{botoes}")
@@ -447,12 +467,30 @@ def chave_atual():
     return os.environ.get("NVIDIA_API_KEY", "").strip()
 
 
+def salvar_chave(valor):
+    valor = valor.strip()
+    if not re.fullmatch(r"nvapi-[A-Za-z0-9_\-]{20,}", valor):
+        raise ValueError("A chave da NVIDIA deve começar com nvapi-.")
+    caminho = RAIZ / ".env"
+    linhas = ([l for l in caminho.read_text(encoding="utf-8").splitlines() if not l.startswith("NVIDIA_API_KEY=")]
+              if caminho.exists() else [])
+    caminho.write_text("\n".join(linhas + [f"NVIDIA_API_KEY={valor}"]) + "\n", encoding="utf-8")
+    os.environ["NVIDIA_API_KEY"] = valor
+
+
 @app.route("/sistema", methods=["GET", "POST"])
 def sistema():
     titulo, ok, resultado = "", True, ""
     if request.method == "POST":
         qual = request.form.get("acao", "")
-        if qual in ACOES:
+        if qual == "chave":
+            titulo = "Chave da NVIDIA"
+            try:
+                salvar_chave(request.form.get("chave", ""))
+                resultado = "Chave salva neste computador. A análise de contratos já pode ser usada."
+            except ValueError as exc:
+                ok, resultado = False, str(exc)
+        elif qual in ACOES:
             titulo = ACOES[qual][0]
             if qual == "analisar" and not chave_atual():
                 ok, resultado = False, "A chave de acesso à IA não está configurada neste servidor (arquivo .env)."
@@ -460,14 +498,22 @@ def sistema():
                 ok, resultado = capturar(ACOES[qual][2])
         else:
             abort(400)
+    chave = chave_atual()
+    estado = (f'<span class="badge ok">configurada · termina em {esc(chave[-4:])}</span>' if chave
+              else '<span class="badge rev">não configurada</span>')
     cartoes = "".join(
-        f"<div class='card'><h3>{esc(t)}</h3><p>{esc(d)}</p><form method='post'>"
+        f"<div class='card'><h3>{esc(t)}</h3><p>{esc(d)}</p><form method='post' data-carregando='Executando, aguarde'>"
         f"<input type='hidden' name='acao' value='{k}'><button class='button' type='submit'>Executar</button></form></div>"
         for k, (t, d, _funcao) in ACOES.items())
     saida = (f"<h2>{esc(titulo)} · {'concluído' if ok else 'com problema'}</h2>"
              f"<div class='console'>{esc(resultado)}</div>") if titulo else ""
     corpo = f"""
     <section class="page-intro"><h1>Sistema</h1><p class="sub">Tudo o que o projeto faz fica aqui, sem terminal.</p></section>
+    <h2>Chave da NVIDIA {estado}</h2>
+    <div class="card"><p>Usada só pela análise de contratos. Fica no arquivo .env deste computador e nunca é exibida.</p>
+    <form method="post" class="key-form"><input type="hidden" name="acao" value="chave">
+    <input type="password" name="chave" placeholder="nvapi-..." autocomplete="off" required>
+    <button class="button" type="submit">Salvar chave</button></form></div>
     <h2>Ações</h2><div class="grid">{cartoes}</div>{saida}
     """
     return pagina("Sistema", corpo, "sistema")
