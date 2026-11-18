@@ -14,8 +14,6 @@ import io
 import json
 import os
 import re
-import sys
-import unittest
 import uuid
 from datetime import datetime, timedelta, timezone
 from html import escape as esc
@@ -465,13 +463,6 @@ def acao_verificar():
     verificar_auditoria.main()
 
 
-def acao_testes():
-    resultado = unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run(
-        unittest.defaultTestLoader.discover(str(RAIZ / "tests")))
-    if not resultado.wasSuccessful():
-        raise RuntimeError("há testes falhando")
-
-
 def acao_analisar_exemplos():
     for pdf in sorted((RAIZ / "dados" / "contratos").glob("*.pdf")):
         r = processar_pdf(pdf.name, pdf.read_bytes())
@@ -488,7 +479,6 @@ ACOES = {
                  "O agente lê os 6 contratos do kit (usa a IA, leva cerca de 1 minuto) e preenche Contratos e Aprovações.",
                  acao_analisar_exemplos),
     "verificar": ("Verificar a auditoria", "Confere a cadeia de hashes do log de auditoria.", acao_verificar),
-    "testes": ("Rodar os testes", "Executa os testes automáticos do projeto.", acao_testes),
 }
 
 

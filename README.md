@@ -20,8 +20,8 @@ A proposta está em `saida/site/proposta.html` e o uso de IA em `USO_DE_IA.md`.
 - **Contratos:** envie um PDF. O agente lê, propõe a regra de cobrança e você **aprova** (a regra passa a valer) ou rejeita.
   Dá para excluir uma submissão.
 - **Aprovações:** o que aguarda decisão e as regras em vigor (aprovadas ou ainda em rascunho).
-- **Sistema:** botões para atualizar as páginas, conferir as notas, analisar os contratos de exemplo, verificar a
-  auditoria e rodar os testes.
+- **Sistema:** botões para atualizar as páginas, conferir as notas, analisar os contratos de exemplo e verificar a
+  auditoria.
 
 Financeiro, Customer Success e RH geram uma página para cada cobrança de cliente.
 
