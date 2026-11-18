@@ -483,7 +483,7 @@ ACOES = {
     "gerar": ("Atualizar páginas e proposta",
               "Recalcula tudo e regenera as páginas de Financeiro, Customer Success, RH, Comercial e a proposta.", acao_gerar),
     "calcular": ("Conferir as notas emitidas",
-                 "Refaz as 19 notas e mostra quais batem e a hipótese de causa das divergências.", acao_calcular),
+                 "Refaz todas as notas emitidas na base e mostra quais batem e a hipótese de causa das divergências.", acao_calcular),
     "analisar": ("Analisar os contratos de exemplo",
                  "O agente lê os 6 contratos do kit (usa a IA, leva cerca de 1 minuto) e preenche Contratos e Aprovações.",
                  acao_analisar_exemplos),
