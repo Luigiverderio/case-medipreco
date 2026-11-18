@@ -31,3 +31,8 @@
 
 Todos os dados são fictícios. O texto dos PDFs enviados na aba **Contratos** vai para o endpoint da NVIDIA. As chaves
 de API ficam só no `.env` local, ignorado pelo git, e nunca no código.
+
+
+## Guiando a IA
+
+Em praticamente todas as etapas do processo de criação, orientei a IA de como eu gostaria que o sistema se comportasse
