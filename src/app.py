@@ -338,7 +338,9 @@ def escrever_regra(regra, registro):
         (pasta / "versoes").mkdir(exist_ok=True)
         (pasta / "versoes" / f"{destino.stem}-{datetime.now(timezone.utc):%Y%m%d%H%M%S}.json").write_bytes(anterior)
     origem = f"extraída do contrato {registro['arquivo']} (sha256 {registro['pdf_sha256'][:12]}) e aprovada por uma pessoa"
-    destino.write_text(json.dumps(dict(regra, origem=origem), ensure_ascii=False, indent=2), encoding="utf-8")
+    modelo = registro.get("analise", {}).get("regra_id")
+    modelo = None if modelo in (None, "NENHUMA") else modelo
+    destino.write_text(json.dumps(dict(regra, origem=origem, modelo=modelo), ensure_ascii=False, indent=2), encoding="utf-8")
     return destino, anterior
 
 
@@ -380,23 +382,50 @@ def decidir_regra(analise_id):
     return redirect(url_for("analise_contrato", analise_id=analise_id))
 
 
+def pendentes_de_aprovacao():
+    """Submissoes sem decisao sobre a regra: com regra proposta ou que o agente nao vinculou."""
+    return [r for r in carregar_analises()
+            if not r.get("decisao_regra") and (r.get("regra_proposta") or r["status"] == "pendente_aprovacao")]
+
+
+def tabela_regras_em_vigor():
+    linhas = ""
+    for caminho in sorted((RAIZ / "regras").glob("*.json")):
+        try:
+            regra = json.loads(caminho.read_text(encoding="utf-8"))
+            v = {item: valor for item, valor, _ in rc.linhas_resumo(regra)}
+        except Exception:
+            app.logger.exception("regra ilegivel: %s", caminho.name)
+            continue
+        aprovada = regra.get("status") == "aprovada"
+        selo = ("<span class='badge ok'>Aprovada por uma pessoa</span>" if aprovada
+                else "<span class='badge aviso'>Rascunho: transcrita à mão</span>")
+        linhas += (f"<tr><td><a href='{url_for('pagina_site', arquivo='cs/' + slug(regra['cliente']) + '.html')}'>{esc(regra['cliente'])}</a></td>"
+                   f"<td>{esc(v['Cobra'])}</td><td>{esc(v['Preço'])}</td><td>{esc(v['Contagem'])}</td>"
+                   f"<td>{esc(v['Mínimo'])}</td><td>{esc(v['Nota'])}</td><td>{selo}</td></tr>")
+    if not linhas:
+        return '<div class="empty">Nenhuma regra em vigor.</div>'
+    return ("<div class='table-wrap'><table><tr><th>Cliente</th><th>Cobra</th><th>Preço</th><th>Contagem</th>"
+            f"<th>Mínimo</th><th>Nota</th><th>Situação</th></tr>{linhas}</table></div>")
+
+
 @app.get("/aprovacoes")
 def aprovacoes():
-    pendentes = [r for r in carregar_analises() if r["status"] == "pendente_aprovacao"]
-    corpo = ("<section class='page-intro'><h1>Aprovações</h1><p class='sub'>Contratos que não puderam ser vinculados automaticamente.</p></section>"
-             + tabela_historico(pendentes))
+    pendentes = pendentes_de_aprovacao()
+    em_vigor = len(list((RAIZ / "regras").glob("*.json")))
+    cartoes = (f"<div class='metrics'><div class='metric'><div class='num'>{len(pendentes)}</div>aguardando decisão</div>"
+               f"<div class='metric'><div class='num'>{em_vigor}</div>regras em vigor</div></div>")
+    aviso = ("" if pendentes else "<div class='empty'>Nada aguardando decisão.</div>")
+    corpo = ("<section class='page-intro'><h1>Aprovações</h1><p class='sub'>O que aguarda a sua decisão e as regras que "
+             "hoje valem nos cálculos.</p></section>" + cartoes
+             + "<h2>Aguardando decisão</h2>"
+             + "<p class='peq'>Abra a análise para conferir a regra extraída do contrato e aprovar ou rejeitar.</p>"
+             + (tabela_historico(pendentes) if pendentes else aviso)
+             + "<h2>Regras em vigor</h2>"
+             + "<p class='peq'>Estas são as regras que o sistema usa agora. Ao aprovar um contrato, a regra do cliente é "
+               "substituída e a anterior fica guardada em regras/versoes.</p>"
+             + tabela_regras_em_vigor())
     return pagina("Aprovações", corpo, "aprovacoes")
-
-
-BRT = timezone(timedelta(hours=-3))
-RESULTADOS = {"vinculado": "Vinculado", "pendente_aprovacao": "Aprovação necessária"}
-
-
-def quando_br(iso):
-    try:
-        return datetime.fromisoformat(iso).astimezone(BRT).strftime("%d/%m/%Y %H:%M:%S")
-    except (ValueError, TypeError):
-        return esc(str(iso))
 
 
 class _Saida(io.StringIO):

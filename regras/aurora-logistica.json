@@ -1,15 +1,47 @@
 {
   "cliente": "Aurora Logística",
-  "modelo": "M1",
-  "status": "rascunho",
-  "origem": "transcrita manualmente do contrato MP-2024-018",
-  "cnpjs": ["41.220.871/0001-16"],
-  "base":      { "tipo": "vida", "clausula": "5.1, 5.2" },
-  "preco":     { "tipo": "por_plano", "planos": { "Base": 7.50, "Plus": 12.00 }, "clausula": "5.1" },
-  "contagem":  { "metodo": "foto_dia", "dia": 26, "mes": "referencia", "clausula": "5.3" },
-  "minimo":    null,
-  "nota":      { "tipo": "unica", "clausula": "5.4" },
-  "pagamento": { "tipo": "pos", "clausula": "5.4" },
-  "premissas": ["dependentes seguem o plano do titular (5.2); na base cada pessoa ja traz o plano"],
-  "pendencias": []
+  "modelo": null,
+  "status": "aprovada",
+  "cnpjs": [
+    "41.220.871/0001-16"
+  ],
+  "base": {
+    "tipo": "vida",
+    "clausula": "Cláusula 5.1 e 5.2"
+  },
+  "preco": {
+    "tipo": "por_plano",
+    "clausula": "Cláusula 5.1",
+    "planos": {
+      "Base": 7.5,
+      "Plus": 12.0
+    }
+  },
+  "contagem": {
+    "metodo": "foto_dia",
+    "clausula": "Cláusula 5.3",
+    "dia": 26,
+    "mes": "referencia"
+  },
+  "minimo": null,
+  "nota": {
+    "tipo": "unica",
+    "clausula": "Cláusula 5.4"
+  },
+  "pagamento": {
+    "tipo": "pos",
+    "clausula": "Cláusula 5.4"
+  },
+  "premissas": [
+    "O contrato lista apenas um CNPJ contratante (41.220.871/0001-16), portanto a nota fiscal é considerada unica.",
+    "Os valores de R$ 7,50 e R$ 12,00 são interpretados como mensais por vida, pois a remuneração é cobrada mensalmente (Cláusula 5.1 e 5.4).",
+    "Dependentes seguem o plano do titular (Cláusula 5.2), portanto são contados na base de vidas do respectivo plano."
+  ],
+  "pendencias": [
+    "Contrato não especifica quantidade mínima de vidas (minimo_vidas).",
+    "Contrato não define o que ocorre se o dia 26 for final de semana ou feriado.",
+    "Contrato não define explicitamente o período exato do 'mês de referência'.",
+    "Contrato não especifica tratamento para inclusões/exclusões de vidas entre os dias de apuração."
+  ],
+  "origem": "extraída do contrato aurora-logistica.pdf (sha256 9957281fb798) e aprovada por uma pessoa"
 }
